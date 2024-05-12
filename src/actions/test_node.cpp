@@ -10,12 +10,12 @@ void BT::TestNode::setConfig(const TestNodeConfig &config)
 
   if(!_test_config.post_script.empty())
   {
-    auto executor = ParseScript(_test_config.post_script);
+    /*auto executor = ParseScript(_test_config.post_script);
     if (!executor)
     {
       throw RuntimeError(executor.error());
     }
-    _executor = executor.value();
+    _executor = executor.value();*/
   }
 }
 

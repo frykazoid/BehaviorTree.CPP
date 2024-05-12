@@ -57,7 +57,7 @@ private:
     {
       return;
     }
-    auto executor = ParseScript(script);
+    /*auto executor = ParseScript(script);
     if (!executor)
     {
       throw RuntimeError(executor.error());
@@ -66,7 +66,7 @@ private:
     {
       _executor = executor.value();
       _script = script;
-    }
+    }*/
   }
 
   std::string _script;

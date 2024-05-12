@@ -12,6 +12,8 @@
 */
 
 #pragma once
+#include <QObject>
+#include <QStringList>
 
 #include <exception>
 #include <map>
@@ -322,7 +324,40 @@ public:
       return std::unique_ptr<DerivedT>(node_ptr);
     }
   }
+  struct PImpl
+  {
+      PImpl(std::string name, NodeConfig config):
+          name(std::move(name)),
+          config(std::move(config))
+      {}
 
+      std::string name;
+
+      NodeStatus status = NodeStatus::IDLE;
+
+      std::condition_variable state_condition_variable;
+
+      mutable std::mutex state_mutex;
+
+      StatusChangeSignal state_change_signal;
+
+      NodeConfig config;
+
+      std::string registration_ID;
+
+      PreTickCallback substitution_callback;
+
+      PostTickCallback post_condition_callback;
+
+      std::mutex callback_injection_mutex;
+
+      std::shared_ptr<WakeUpSignal> wake_up;
+
+      std::array<ScriptFunction, size_t(PreCond::COUNT_)> pre_parsed;
+      std::array<ScriptFunction, size_t(PostCond::COUNT_)> post_parsed;
+  };
+
+  std::unique_ptr<PImpl> _p;
 protected:
   friend class BehaviorTreeFactory;
   friend class DecoratorNode;
@@ -359,8 +394,8 @@ protected:
 
 private:
 
-  struct PImpl;
-  std::unique_ptr<PImpl> _p;
+ //struct PImpl;
+ // std::unique_ptr<PImpl> _p;
 
   Expected<NodeStatus> checkPreConditions();
   void checkPostConditions(NodeStatus status);

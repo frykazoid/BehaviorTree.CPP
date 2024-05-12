@@ -30,17 +30,6 @@ bool WildcardMatch(std::string const& str, StringView filter)
   return wildcards::match(str, filter);
 }
 
-struct BehaviorTreeFactory::PImpl
-{
-  std::unordered_map<std::string, NodeBuilder> builders;
-  std::unordered_map<std::string, TreeNodeManifest> manifests;
-  std::set<std::string> builtin_IDs;
-  std::unordered_map<std::string, Any> behavior_tree_definitions;
-  std::shared_ptr<std::unordered_map<std::string, int>> scripting_enums;
-  std::shared_ptr<BT::Parser> parser;
-  std::unordered_map<std::string, SubstitutionRule> substitution_rules;
-};
-
 BehaviorTreeFactory::BehaviorTreeFactory():
   _p(new PImpl)
 {
@@ -360,14 +349,14 @@ std::unique_ptr<TreeNode> BehaviorTreeFactory::instantiateTreeNode(
   auto AssignConditions = [](auto& conditions, auto& executors) {
     for (const auto& [cond_id, script] : conditions)
     {
-      if (auto executor = ParseScript(script))
+     /*if (auto executor = ParseScript(script))
       {
         executors[size_t(cond_id)] = executor.value();
       }
       else
       {
         throw LogicError("Error in the script \"", script, "\"\n", executor.error());
-      }
+      }*/
     }
   };
   AssignConditions(config.pre_conditions, node->preConditionsScripts());

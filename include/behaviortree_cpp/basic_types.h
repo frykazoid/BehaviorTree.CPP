@@ -38,7 +38,23 @@ enum class NodeStatus
   FAILURE = 3,
   SKIPPED = 4,
 };
-
+inline std::string Status2Char(const NodeStatus& status)
+{
+    std::string res;
+    if (status == NodeStatus::IDLE)
+        res = "IDLE";
+    else if (status == NodeStatus::RUNNING)
+        res = "RUNNING";
+    else if (status == NodeStatus::FAILURE)
+        res = "FAILURE";
+    else if (status == NodeStatus::SKIPPED)
+        res = "SKIPPED";
+    else if (status == NodeStatus::SUCCESS)
+        res = "SUCCESS";
+    else
+        res = "UNKNOWN";
+    return res;
+}
 inline bool isStatusActive(const NodeStatus& status)
 {
   return status != NodeStatus::IDLE && status != NodeStatus::SKIPPED;

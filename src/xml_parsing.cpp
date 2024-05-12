@@ -667,7 +667,7 @@ TreeNode::Ptr XMLParser::PImpl::createNodeFromXML(const XMLElement* element,
           if(!is_blacbkboard && port_model.converter() && port_model.isStronglyTyped())
           {
             // This may throw
-            try {
+            /*try {
               port_model.converter()(port_value);
             }
             catch(std::exception& ex)
@@ -675,7 +675,7 @@ TreeNode::Ptr XMLParser::PImpl::createNodeFromXML(const XMLElement* element,
               auto msg = StrCat("The port with name \"", port_name, "\" and value \"", port_value,
                                 "\" can not be converted to ", port_model.typeName());
               throw LogicError(msg);
-            }
+            }*/
           }
         }
       }

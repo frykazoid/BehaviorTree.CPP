@@ -12,7 +12,7 @@
 */
 
 #pragma once
-
+#define BTCPP_LIBRARY_VERSION "4.5.2"
 #include "behaviortree_cpp/controls/parallel_node.h"
 #include "behaviortree_cpp/controls/parallel_all_node.h"
 #include "behaviortree_cpp/controls/reactive_sequence.h"

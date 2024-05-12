@@ -14,43 +14,17 @@
 #include "behaviortree_cpp/tree_node.h"
 #include <cstring>
 #include <array>
+#include <QObject>
+#include <QString>
+extern bool glo_flag_ready;
+extern bool glo_flag_ack;
+extern int glo_indent_level;
+extern BT::TreeNode::PImpl* current_node;
+
+#include <unistd.h>
 
 namespace BT
 {
-
-struct TreeNode::PImpl
-{
-  PImpl(std::string name, NodeConfig config):
-    name(std::move(name)),
-    config(std::move(config))
-  {}
-
-  const std::string name;
-
-  NodeStatus status = NodeStatus::IDLE;
-
-  std::condition_variable state_condition_variable;
-
-  mutable std::mutex state_mutex;
-
-  StatusChangeSignal state_change_signal;
-
-  NodeConfig config;
-
-  std::string registration_ID;
-
-  PreTickCallback substitution_callback;
-
-  PostTickCallback post_condition_callback;
-
-  std::mutex callback_injection_mutex;
-
-  std::shared_ptr<WakeUpSignal> wake_up;
-
-  std::array<ScriptFunction, size_t(PreCond::COUNT_)> pre_parsed;
-  std::array<ScriptFunction, size_t(PostCond::COUNT_)> post_parsed;
-};
-
 
 TreeNode::TreeNode(std::string name, NodeConfig config) :
   _p(new PImpl(std::move(name), std::move(config)))
@@ -164,6 +138,18 @@ void TreeNode::setStatus(NodeStatus new_status)
   }
   if (prev_status != new_status)
   {
+      printf("BT NODE=%s TYPE= NAME=%s STATUS=%s\n\r",
+             _p->config.path.c_str(),
+             _p->name.c_str(),
+             Status2Char(new_status).c_str());
+      current_node =  _p.get();
+      glo_flag_ready = true;
+      while(glo_flag_ack == false)
+      {
+          usleep(100000);
+      }
+      glo_flag_ack = false;
+
     _p->state_condition_variable.notify_all();
     _p->state_change_signal.notify(std::chrono::high_resolution_clock::now(), *this,
                                    prev_status, new_status);
